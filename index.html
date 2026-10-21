@@ -1,0 +1,57 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>rheaWebKonfigurator</title>
+  <link rel="stylesheet" href="css/style.css?v=54">
+</head>
+<body>
+  <header>
+    <h1>rhea<span>WebKonfigurator</span></h1>
+    <p class="sub">Offenes Werkzeug für rheavendors / rheAction Kaffeeautomaten · Editor für <code>.da2</code> (XML) und <code>.dat</code> (3500/8192, verifizierte Felder) · <code>.da3</code> Inspektor · Programmer-Anbindung (in Arbeit)</p>
+  </header>
+
+  <section class="toolbar">
+    <label class="btn primary">
+      <input type="file" id="file" accept=".da2,.xml,.dat,.da3" hidden>
+      📂 Datei laden
+    </label>
+    <button id="save" disabled>💾 Speichern</button>
+    <input id="filter" type="search" placeholder="🔍 Filtern…" autocomplete="off">
+    <label class="switch" title="Einfache vs. erweiterte Ansicht">
+      <span class="switch-off">Einfach</span>
+      <input type="checkbox" id="mode">
+      <span class="slider"></span>
+      <span class="switch-on">Experte</span>
+    </label>
+    <button id="connect" disabled>🔌 Maschine</button>
+    <button id="flashbtn">💳 Flashcard</button>
+    <a class="btn" href="credit.html?v=54">💰 Guthaben-Manager</a>
+    <span id="status" class="status"></span>
+  </section>
+
+  <main id="sections"></main>
+
+  <footer>
+    <p>Editierbar: <code>.da2</code> (modern) und <code>.dat</code> (3500 „altes Format" + 8192 CINO IC/Cafe Europa) mit automatischer Checksumme. Karten (servosecure / ST&nbsp;SRI512) lesen &amp; schreiben über den „Guthaben-Manager" — mit rhea-Leser oder PN532 USB-C.</p>
+  </footer>
+
+  <script src="js/da2.js?v=54"></script>
+  <script src="js/binformat.js?v=54"></script>
+  <script src="js/dat3500.js?v=54"></script>
+  <script src="js/dat8192.js?v=54"></script>
+  <script src="js/schemas.js?v=54"></script>
+  <script src="js/programmer.js?v=54"></script>
+  <script src="js/flashcard.js?v=54"></script>
+  <script src="js/app.js?v=54"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

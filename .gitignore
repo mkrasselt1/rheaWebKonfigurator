@@ -1,0 +1,16 @@
+# Kundendaten / interne Konfigs NIE einchecken
+samples/
+*.dat
+*.da2
+*.da3
+*.mhx
+*.mh3
+diffs/
+decompiled/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

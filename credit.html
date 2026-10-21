@@ -1,0 +1,161 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guthaben-Manager · rheaWebKonfigurator</title>
+  <link rel="stylesheet" href="css/style.css?v=54">
+  <style>
+    .cm-wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px 40px; }
+    .cm-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .cm-bar select, .cm-bar button { padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel2); color: var(--fg); font-size: 14px; cursor: pointer; }
+    .cm-bar button.primary { background: var(--accent); border-color: var(--accent); color: #141414; font-weight: 600; }
+    .cm-bar button:disabled { opacity: .5; cursor: not-allowed; }
+    .cm-bar .spacer { flex: 1; }
+    .cm-stat { font-size: 13px; font-weight: 600; color: var(--muted); }
+    .cm-stat.on { color: var(--accent); }
+    .cm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+    @media (max-width: 760px) { .cm-grid { grid-template-columns: 1fr; } }
+    .cm-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+    .cm-card h2 { margin: 0 0 10px; font-size: 15px; }
+    .cm-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .cm-kpi { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+    .cm-kpi span { display: block; font-size: 11px; color: var(--muted); }
+    .cm-kpi b { font-size: 18px; font-family: ui-monospace, monospace; }
+    .cm-kpi.wide { grid-column: 1 / -1; }
+    .cm-row { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
+    .cm-row[hidden] { display: none; }
+    .cm-row label { font-size: 13px; min-width: 90px; color: var(--muted); }
+    .cm-row input { flex: 1; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel2); color: var(--fg); font-size: 14px; }
+    .cm-note { font-size: 12px; color: var(--muted); margin: 6px 0; }
+    .cm-warn { font-size: 12px; color: #e0a33a; background: rgba(224,163,58,.1); border: 1px solid rgba(224,163,58,.3); border-radius: 8px; padding: 8px 10px; margin: 8px 0; }
+    .cm-special { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cm-special button { flex: 1; min-width: 130px; }
+    .cm-quick { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+    .qa { padding: 6px 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel2); color: var(--fg); cursor: pointer; font-size: 13px; }
+    .qa:hover { border-color: var(--accent); }
+    .qa.qz { margin-left: auto; opacity: .8; }
+    table.cm-book, table.cm-blocks, table.cm-cards { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .cm-book th, .cm-book td, .cm-blocks th, .cm-blocks td, .cm-cards th, .cm-cards td { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--line); }
+    .cm-book th, .cm-blocks th, .cm-cards th { color: var(--muted); font-weight: 600; }
+    .cm-blocks td { font-family: ui-monospace, monospace; }
+    .cm-book-wrap, .cm-blocks-wrap, .cm-cards-wrap { max-height: 260px; overflow: auto; }
+    .cm-cards input.name { width: 100%; background: transparent; border: 1px solid transparent; border-radius: 6px; color: var(--fg); padding: 3px 6px; font-size: 12.5px; }
+    .cm-cards input.name:hover, .cm-cards input.name:focus { border-color: var(--line); background: var(--panel2); outline: none; }
+    .cm-cards td.uid { font-family: ui-monospace, monospace; }
+    .cm-full { margin-top: 18px; }
+    details.cm-raw { margin-top: 18px; }
+    details.cm-raw summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+    pre.cm-log { margin: 8px 0 0; padding: 10px 12px; height: 180px; overflow: auto; background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; font-family: ui-monospace, monospace; font-size: 12px; white-space: pre-wrap; }
+    a.cm-back { color: var(--muted); text-decoration: none; font-size: 13px; }
+    a.cm-back:hover { color: var(--fg); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>rhea<span>WebKonfigurator</span> · Guthaben-Manager</h1>
+    <p class="sub"><a class="cm-back" href="index.html?v=54">← zurück zum Editor</a> · <b>servosecure</b>-Karten (ST&nbsp;SRI512) lesen &amp; beschreiben — Guthaben &amp; Spezialkarten — über klassischen rhea-Leser oder PN532 USB-C</p>
+  </header>
+
+  <main class="cm-wrap">
+    <div class="cm-bar">
+      <label for="hw" class="cm-stat">Hardware:</label>
+      <select id="hw">
+        <option value="rhea">Klassischer rhea-Leser (FTDI, 115200)</option>
+        <option value="pn532">PN532 USB-C (seriell)</option>
+      </select>
+      <button id="connect" class="primary">Verbinden</button>
+      <button id="disconnect" disabled>Trennen</button>
+      <span id="stat" class="cm-stat">getrennt</span>
+      <span class="spacer"></span>
+      <button id="export" title="Alle gespeicherten Karten + Buchungen als JSON sichern">⬇ Export</button>
+      <button id="import" title="JSON-Sicherung einlesen">⬆ Import</button>
+      <input id="importfile" type="file" accept="application/json,.json" hidden>
+    </div>
+
+    <div class="cm-grid">
+      <section class="cm-card">
+        <h2>💳 Karte</h2>
+        <div class="cm-row"><button id="read" class="primary" disabled>Karte lesen</button></div>
+        <div class="cm-kpis">
+          <div class="cm-kpi wide"><span>UID</span><b id="k-uid">—</b></div>
+          <div class="cm-kpi"><span>Guthaben (Credit)</span><b id="k-credit">—</b></div>
+          <div class="cm-kpi"><span>Code B</span><b id="k-codeb">—</b></div>
+          <div class="cm-kpi"><span>Kartentyp</span><b id="k-type">—</b></div>
+          <div class="cm-kpi"><span>Schreibzähler</span><b id="k-ctr">—</b></div>
+        </div>
+      </section>
+
+      <section class="cm-card">
+        <h2>✍️ Schreiben</h2>
+        <div class="cm-row"><label for="w-type">Kartentyp</label>
+          <select id="w-type" disabled>
+            <option value="standard">Standard-Guthabenkarte</option>
+            <option value="recharge">Aufwertungskarte (Guthaben)</option>
+            <option value="water">Water Purifier (Wasserfilter)</option>
+            <option value="kanne">Kannenkarte</option>
+            <option value="free">Free Vending</option>
+            <option value="double">Double Selection</option>
+            <option value="door">Door Unlock</option>
+          </select>
+        </div>
+        <div class="cm-row" data-f="credit"><label for="w-credit">Guthaben (€)</label><input id="w-credit" type="number" min="0" max="655.35" step="0.01" placeholder="z.B. 10,00" disabled></div>
+        <div class="cm-row" data-f="credit"><label></label><div class="cm-quick">
+          <button type="button" class="qa" data-eur="1">+1 €</button>
+          <button type="button" class="qa" data-eur="5">+5 €</button>
+          <button type="button" class="qa" data-eur="10">+10 €</button>
+          <button type="button" class="qa" data-eur="20">+20 €</button>
+          <button type="button" class="qa" data-eur="50">+50 €</button>
+          <button type="button" class="qa qz" data-eur="0">0</button>
+        </div></div>
+        <div class="cm-row" data-f="codeb"><label for="w-codeb">Code B</label><input id="w-codeb" type="number" min="0" step="1" placeholder="z.B. 500" disabled></div>
+        <div class="cm-row" data-f="value" hidden><label for="w-value">Wert</label><input id="w-value" type="number" min="0" max="255" step="1" placeholder="z.B. 100" disabled></div>
+        <div class="cm-row"><button id="write-card" disabled>Karte schreiben</button></div>
+        <div class="cm-note">Guthaben/Aufwertung: Credit + Code B. Water Purifier: Wert (0–255). Kannenkarte / Free Vending / Double Selection / Door Unlock: ohne weitere Eingabe.</div>
+      </section>
+    </div>
+
+    <section class="cm-card cm-full">
+      <h2>🗂️ Bekannte Karten <span id="cards-count" class="cm-note" style="font-weight:400"></span></h2>
+      <div class="cm-cards-wrap">
+        <table class="cm-cards">
+          <thead><tr><th>Name</th><th>UID</th><th>Typ</th><th>Guthaben</th><th>Code B</th><th>Gelesen/Schr.</th><th>Zuletzt</th><th></th></tr></thead>
+          <tbody id="cards"></tbody>
+        </table>
+      </div>
+      <div class="cm-note">Gespeichert im Browser (localStorage). Für Backup/Übertragung auf andere PCs: ⬇ Export / ⬆ Import oben.</div>
+    </section>
+
+    <div class="cm-grid">
+      <section class="cm-card">
+        <h2>📒 Buchungen</h2>
+        <div class="cm-book-wrap">
+          <table class="cm-book">
+            <thead><tr><th>Zeit</th><th>Aktion</th><th>Typ</th><th>UID</th><th>Credit</th><th>Code B</th></tr></thead>
+            <tbody id="book"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="cm-card">
+        <h2>🧱 Roh-Blöcke</h2>
+        <div class="cm-blocks-wrap">
+          <table class="cm-blocks">
+            <thead><tr><th>Blk</th><th>Daten</th></tr></thead>
+            <tbody id="blocks"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <details class="cm-raw">
+      <summary>🔧 Roh-Konsole (TX/RX)</summary>
+      <pre id="log" class="cm-log"></pre>
+    </details>
+  </main>
+
+  <script src="js/programmer.js?v=54"></script>
+  <script src="js/pn532.js?v=54"></script>
+  <script src="js/credit.js?v=54"></script>
+</body>
+</html>
