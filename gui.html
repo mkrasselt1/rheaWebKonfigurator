@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>rheaWebKonfigurator · GUI-Vorschau</title>
+  <link rel="stylesheet" href="css/style.css?v=58">
+  <style>
+    .gui-bar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:12px 0; }
+    .gui-bar label.btn { cursor:pointer; }
+    .gui-bar input[type=file] { display:none; }
+    #gStage { border:1px solid var(--line,#ccc); border-radius:8px; background:#111; padding:12px;
+              overflow:auto; min-height:200px; }
+    #gStageInner { margin:0 auto; position:relative; }
+    #gFrame { border:0; background:#000; transform-origin:top left; display:block; box-shadow:0 0 0 1px #333; }
+    #gDrop.empty { display:flex; align-items:center; justify-content:center; color:#999; min-height:260px;
+                   border:2px dashed #555; border-radius:8px; text-align:center; padding:20px; }
+    #gLog { font-family:ui-monospace,Consolas,monospace; font-size:12px; white-space:pre-wrap;
+            background:var(--panel,#f6f6f6); border:1px solid var(--line,#ddd); border-radius:6px;
+            padding:8px; max-height:140px; overflow:auto; margin-top:10px; }
+    .gui-note { font-size:13px; color:var(--muted,#666); }
+    .gui-fam { font-weight:bold; }
+    .trig-grp { margin-bottom:12px; border-top:1px solid var(--line,#ddd); padding-top:8px; }
+    .trig-grp .btn { margin:2px 3px 0 0; font-size:13px; padding:4px 8px; }
+    .trig-row { display:flex; align-items:center; gap:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>rhea<span>WebKonfigurator</span> · GUI-Vorschau</h1>
+    <p class="sub"><a class="cm-back" href="index.html?v=58">← zurück zum Editor</a> ·
+      Maschinen-GUI-Pack laden und <b>originalgetreu</b> im Browser ansehen (Standby, Auswahlen, Touch-Menü, Info …).
+      Beide Familien: <b>pageSel</b> (Bild/Skin) und <b>pageMenu</b> (Touch, GuiConfig.xml).</p>
+  </header>
+
+  <main class="cm-wrap">
+    <div class="gui-bar">
+      <label class="btn" for="gPick">📂 GUI-Pack-Ordner laden</label>
+      <input type="file" id="gPick" webkitdirectory directory multiple>
+      <span class="gui-note">Typ: <span id="gFamily" class="gui-fam">—</span></span>
+    </div>
+
+    <div class="gui-bar" id="gBar" style="display:none">
+      <label>Bildschirm: <select id="gScreen"></select></label>
+      <label>Größe:
+        <select id="gSize">
+          <option value="1024x600">1024×600 (7″ Touch)</option>
+          <option value="1280x800">1280×800</option>
+          <option value="800x480">800×480</option>
+          <option value="480x800">480×800 (Luce klein)</option>
+          <option value="600x1024">600×1024 (hoch)</option>
+          <option value="1080x1920">1080×1920 (Portrait)</option>
+        </select>
+      </label>
+      <button id="gReload" class="btn">↻ neu laden</button>
+    </div>
+
+    <div id="gRow" style="display:flex; gap:12px; align-items:flex-start;">
+      <div id="gStage" style="flex:1; min-width:0;">
+        <div id="gDrop" class="empty">GUI-Pack-Ordner hierher ziehen oder oben „📂 GUI-Pack-Ordner laden" klicken.<br>
+          (den Ordner wählen, der <code>web/</code> enthält — oder den <code>web/</code>-Ordner selbst)</div>
+        <div id="gStageInner" style="display:none"><iframe id="gFrame" title="GUI-Vorschau"></iframe></div>
+      </div>
+
+      <aside id="gTrig" style="display:none; width:250px; flex:0 0 250px; border:1px solid var(--line,#ccc); border-radius:8px; padding:10px; background:var(--panel,#f6f6f6);">
+        <b>🎛️ Maschine simulieren</b>
+        <p class="gui-note" style="margin:6px 0 10px;">Externe Trigger (nur STM32-GUI): senden die Events, die sonst die Maschine schickt.</p>
+
+        <div class="trig-grp">
+          <div class="trig-row"><input id="tCredit" value="1,00" style="width:60px"> €
+            <button class="btn" data-trig="99">Guthaben</button></div>
+        </div>
+        <div class="trig-grp">
+          <input id="tMsg" value="Bitte Bohnenbehälter prüfen" style="width:100%; box-sizing:border-box;">
+          <button class="btn" data-trig="100" style="margin-top:4px">💬 System-Message anzeigen</button>
+        </div>
+        <div class="trig-grp">
+          <button class="btn" data-trig="97all">✅ alle verfügbar</button>
+          <button class="btn" data-trig="97none">⛔ alle gesperrt</button>
+          <button class="btn" data-trig="98">💶 Preise senden</button>
+        </div>
+        <div class="trig-grp">
+          <div class="gui-note">Auswahl-Ablauf:</div>
+          <button class="btn" data-trig="102">▶ Start</button>
+          <button class="btn" data-trig="72">⏳ Fortschritt</button>
+          <button class="btn" data-trig="103">■ Stop/fertig</button>
+        </div>
+        <div class="trig-grp">
+          <button class="btn" data-trig="104">ℹ️ CPU-Status</button>
+        </div>
+      </aside>
+    </div>
+
+    <div id="gEditWrap" style="display:none; margin-top:14px;">
+      <div class="gui-bar">
+        <b>✏️ Datei bearbeiten:</b>
+        <select id="gFile" style="max-width:340px"></select>
+        <button id="gApply" class="btn">Übernehmen → Vorschau</button>
+        <button id="gExport" class="btn">⬇ Pack als ZIP exportieren</button>
+        <span id="gEditNote" class="gui-note"></span>
+      </div>
+      <textarea id="gCode" spellcheck="false" wrap="off"
+        style="width:100%; height:320px; box-sizing:border-box; font-family:ui-monospace,Consolas,monospace; font-size:12px; line-height:1.4;"></textarea>
+      <p class="gui-note">HTML/JS/CSS/XML direkt ändern (z. B. <code>GuiConfig.xml</code> für Namen/Bilder, oder die Seiten-Logik). „Übernehmen" rendert sofort neu; „ZIP" lädt den geänderten Pack herunter. Geänderte Dateien sind mit ● markiert. Die Originaldateien auf der Platte bleiben unberührt.</p>
+    </div>
+
+    <div id="gLog"></div>
+    <p class="gui-note">Hinweis: Browser (Chrome/Edge) über <b>localhost</b> oder <b>https</b> nötig — der interne Vorschau-Browser
+      und <code>file://</code> können den Service-Worker-Host nicht. Getränkenamen/Texte sind <b>Beispielwerte</b>
+      (auf der Maschine von der Firmware geliefert). Nichts wird verändert — reine Vorschau.</p>
+  </main>
+
+  <script>
+    // Bühne umschalten, sobald ein Pack geladen ist
+    (function () {
+      const obs = new MutationObserver(() => {
+        const inner = document.getElementById('gStageInner');
+        const drop = document.getElementById('gDrop');
+        if (document.getElementById('gFrame').src) { inner.style.display = ''; drop.style.display = 'none'; }
+      });
+      obs.observe(document.getElementById('gFrame') || document.body, { attributes: true, attributeFilter: ['src'] });
+    })();
+  </script>
+  <script src="js/gui.js?v=58"></script>
+</body>
+</html>

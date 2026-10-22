@@ -912,7 +912,7 @@
       '<div class="lp-note">⚠️ Schreiben geht <b>live an die Maschine</b> (9600 8N1). Gerät muss betriebsbereit sein; Antworten werden geprüft.</div>' +
       '<div class="lp-actions"><button id="lp-boiler">Boiler-Soll lesen</button><button id="lp-price">Preis Wahl 1 lesen</button></div>' +
       '<div class="lp-cmd"><input id="lp-input" placeholder="Rohkommando, z.B. MA5*TMP*TME" autocomplete="off"><button id="lp-send">Senden</button></div>' +
-      '<div class="lp-note">💳 Karten lesen/schreiben jetzt im <a href="credit.html?v=55">Guthaben-Manager</a>.</div>' +
+      '<div class="lp-note">💳 Karten lesen/schreiben jetzt im <a href="credit.html?v=58">Guthaben-Manager</a>.</div>' +
       '<pre id="lp-log" class="lp-log"></pre>' +
       '<div class="lp-foot"><button id="lp-hide">Panel schließen</button></div>';
     document.body.append(panel);
